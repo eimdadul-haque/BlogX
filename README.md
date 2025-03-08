@@ -35,7 +35,7 @@ BlogX is a modern web application for blogging, built with:
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/yourusername/BlogX.git
+   git clone https://github.com/eimdadul-haque/BlogX.git
    
 ### Contribution
 
