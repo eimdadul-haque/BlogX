@@ -56,7 +56,6 @@ CREATE SCHEMA [aggregate];
 
 CREATE VIEW [aggregate].[Blog]
 AS
-
 	SELECT 
 		Blog.Id,
 		Blog.ApplicationUserID,
@@ -183,4 +182,61 @@ BEGIN
 		[IsActive] = CONVERT(BIT, 0)
 	WHERE 
 		[Id] = @BlogId;
+END
+
+CREATE OR ALTER PROCEDURE [dbo].[Get_Blog]
+	@BlogId INT
+AS 
+BEGIN
+	SET NOCOUNT ON;
+	SELECT 
+	   [Id]
+      ,[ApplicationUserID]
+      ,[UserName]
+      ,[Title]
+      ,[Content]
+      ,[PhotoId]
+      ,[PublishDate]
+      ,[UpdateDate]
+      ,[IsActive]
+	FROM 
+		[aggregate].[Blog] 
+	WHERE 
+		[IsActive] = CONVERT(BIT, 1) 
+	AND 
+		[Id] = @BlogId
+END
+
+
+CREATE OR ALTER PROCEDURE [dbo].[GetAll_Blog]
+	@Offset INT,
+	@PageSize INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+	SELECT 
+	   [Id]
+      ,[ApplicationUserID]
+      ,[UserName]
+      ,[Title]
+      ,[Content]
+      ,[PhotoId]
+      ,[PublishDate]
+      ,[UpdateDate]
+      ,[IsActive]
+	FROM 
+		[aggregate].[Blog] 
+	WHERE 
+		[IsActive] = CONVERT(BIT, 1)
+	ORDER BY
+		[Id]
+	OFFSET @Offset ROWS
+	FETCH NEXT @PageSize ROWS ONLY;
+
+	SELECT
+		COUNT(*) 	
+	FROM 
+		[aggregate].[Blog] 
+	WHERE 
+		[IsActive] = CONVERT(BIT, 1)
 END
