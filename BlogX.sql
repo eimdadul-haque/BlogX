@@ -244,7 +244,7 @@ END
 CREATE OR ALTER PROCEDURE [dbo].[GetAllFamous_Blog]
 AS
 BEGIN
-	SELECT 
+	SELECT TOP (6)
 		 Blog.[Id]
 		,Blog.[ApplicationUserID]
 		,Blog.[UserName]
@@ -276,4 +276,27 @@ BEGIN
 	ORDER BY 
 		COUNT(Comment.Id)
 	DESC
+END
+
+CREATE OR ALTER PROCEDURE [dbo].[GetBlogByUserId]
+	@UserId INT 
+AS
+BEGIN
+	SET NOCOUNT ON;
+	SELECT
+		 Blog.[Id]
+		,Blog.[ApplicationUserID]
+		,Blog.[UserName]
+		,Blog.[Title]
+		,Blog.[Content]
+		,Blog.[PhotoId]
+		,Blog.[PublishDate]
+		,Blog.[UpdateDate]
+		,Blog.[IsActive]
+	FROM 
+		[aggregate].[Blog] AS Blog
+	WHERE 
+		Blog.IsActive = CONVERT(BIT, 1)
+	AND 
+		Blog.ApplicationUserID = @UserId;
 END
