@@ -121,3 +121,66 @@ CREATE TYPE [dbo].[BlogCommentType] AS TABLE(
 	[BlogId] INT NOT NULL,
 	[Comment] VARCHAR(300) NOT NULL
 );
+
+CREATE OR ALTER PROCEDURE [dbo].[Account_GetByUsername]
+	@NormalizeUserName VARCHAR(250)
+AS 
+BEGIN
+    SET NOCOUNT ON;
+
+	SELECT 
+		   [Id]
+		  ,[UserName]
+		  ,[NormalizeUserName]
+		  ,[Email]
+		  ,[NormalizeEmail]
+		  ,[FullName]
+	FROM 
+		[dbo].[ApplicationUser] AS AppUser
+	WHERE 
+		AppUser.[NormalizeUserName] = @NormalizeUserName;
+END
+
+
+CREATE OR ALTER PROCEDURE [dbo].[Account_Insert]
+    @Account AccountType READONLY
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT INTO [dbo].[ApplicationUser]
+           ([UserName],
+            [NormalizeUserName],
+            [Email],
+            [NormalizeEmail],
+            [FullName])
+    SELECT 
+           [UserName],
+           [NormalizeUserName],
+           [Email],
+           [NormalizeEmail],
+           [FullName]
+    FROM @Account;
+
+    SELECT CAST(SCOPE_IDENTITY() AS INT);
+END
+
+
+CREATE OR ALTER PROCEDURE [dbo].[Blog_Delete]
+@BlogId INT
+AS 
+BEGIN
+	SET NOCOUNT ON;
+
+	UPDATE [dbo].[BlogComment] 
+	SET 
+		[IsActive] = CONVERT(BIT, 0)
+	WHERE 
+		[BlogId] = @BlogId;
+
+	UPDATE [dbo].[Blog] 
+	SET 
+		[IsActive] = CONVERT(BIT, 0)
+	WHERE 
+		[Id] = @BlogId;
+END
