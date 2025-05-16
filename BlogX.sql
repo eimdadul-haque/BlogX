@@ -240,3 +240,40 @@ BEGIN
 	WHERE 
 		[IsActive] = CONVERT(BIT, 1)
 END
+
+CREATE OR ALTER PROCEDURE [dbo].[GetAllFamous_Blog]
+AS
+BEGIN
+	SELECT 
+		 Blog.[Id]
+		,Blog.[ApplicationUserID]
+		,Blog.[UserName]
+		,Blog.[Title]
+		,Blog.[Content]
+		,Blog.[PhotoId]
+		,Blog.[PublishDate]
+		,Blog.[UpdateDate]
+		,Blog.[IsActive]
+	FROM 
+		[aggregate].[Blog] AS Blog
+	INNER JOIN 
+		[dbo].[BlogComment] AS Comment 
+	ON Blog.Id = Comment.BlogId
+	WHERE 
+		Blog.IsActive = CONVERT(BIT, 1) 
+	AND 
+		Comment.IsActive = CONVERT(BIT, 1)
+	GROUP BY
+		 Blog.[Id]
+		,Blog.[ApplicationUserID]
+		,Blog.[UserName]
+		,Blog.[Title]
+		,Blog.[Content]
+		,Blog.[PhotoId]
+		,Blog.[PublishDate]
+		,Blog.[UpdateDate]
+		,Blog.[IsActive]
+	ORDER BY 
+		COUNT(Comment.Id)
+	DESC
+END
